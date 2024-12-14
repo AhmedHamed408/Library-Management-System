@@ -1,4 +1,4 @@
-# Library Management System
+![image](https://github.com/user-attachments/assets/376f9835-3749-4e62-b338-deebcd87e8af)# Library Management System
 
 ## Description
 The **Library Management System** is a comprehensive solution for managing the operations of a library. This project enables efficient management of books, authors, employees, members, and borrowing activities. It is designed to help librarians and library staff streamline their day-to-day tasks while providing users with an intuitive interface to explore and borrow books.
@@ -46,9 +46,10 @@ The **Library Management System** is a comprehensive solution for managing the o
 3. Borrow and return books through the designated sections.
 4. Search for books, authors, members, and employees using the search bar.
 
+
 ## Screenshots
-![Library Management System](![image](https://github.com/user-attachments/assets/e1ce03b8-c0b7-44c0-baa6-4738b004316c)
-)
+![Library Management System Screenshot](https://github.com/user-attachments/assets/9460154d-0d81-42dc-8158-db457c443cac)
+
 
 
 
