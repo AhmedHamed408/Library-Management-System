@@ -342,7 +342,7 @@ def create_book_window(root , menu_frame,employee_id_value):
            SELECT COUNT(Book_ID) 
            FROM Book_Copy 
             WHERE ISBN = ? AND Status = ?
-             """, (isbn, 'Yes'))
+             """, (isbn, 'Available'))
         count = cursor.fetchone()[0] 
 
         cursor.execute("""
@@ -354,7 +354,7 @@ def create_book_window(root , menu_frame,employee_id_value):
            SELECT COUNT(Book_ID) 
            FROM Book_Copy 
             WHERE ISBN = ? AND Status = ?
-             """, (isbn, 'No'))
+             """, (isbn, 'Borrowed'))
         count = cursor.fetchone()[0] 
 
         cursor.execute("""

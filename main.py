@@ -6,10 +6,12 @@ from database import creat_DataBase
 def main():
     global window
     window = ctk.CTk()
-    window.title("Library Management System")
+    window.title("Library Management System")   
     window.geometry('850x650')
     window.resizable(False, False)
     creat_DataBase()
+    window.iconbitmap("images/iconwindow.ico")
+    
     create_login_window(window, redirect_to_page)
 
     window.mainloop()

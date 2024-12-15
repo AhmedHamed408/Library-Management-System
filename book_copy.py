@@ -127,13 +127,20 @@ def create_book_copy_window(root , menu_frame,emp_id):
             return
 
         book_id = tree.item(selected_item)["values"][0]
+
+        cursor.execute("SELECT COUNT(*) FROM Borrow WHERE Book_ID=?", (book_id,))
+        borrowed_count = cursor.fetchone()[0]
+
+        if borrowed_count > 0:
+            update_status("Error: Book cannot be deleted because it is currently borrowed or borrowed befor.", "red")
+            return
+
         cursor.execute("DELETE FROM Book_Copy WHERE Book_ID=?", (book_id,))
         conn.commit()
 
-        
         update_status("Book deleted successfully!", "green")
         display_book_copies()
-        
+            
     def search_book_copy():
         search_term = search_var.get()
         if not search_term:
