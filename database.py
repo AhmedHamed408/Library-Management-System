@@ -98,36 +98,80 @@ def creat_DataBase():
     ]   
 
     authors = [
-        (1, "George Orwell", "British", 1),
-        (2, "J.K. Rowling", "British", 2),
-        (3, "Mark Twain", "American", 3)
+        (1, "Naguib Mahfouz", "Egyptian", 2),
+        (2, "Taha Hussein", "Egyptian", 3),
+        (3, "Youssef Idris", "Egyptian", 4),
+        (4, "Ibrahim Aslan", "Egyptian", 5),
+        (5, "Radwa Ashour", "Egyptian", 6),
+        (6, "Sonallah Ibrahim", "Egyptian", 2),
+        (7, "Alaa Al Aswany", "Egyptian", 3),
+        (8, "Mahmoud El-Wardany", "Egyptian", 4),
+        (9, "Monir Al-Mahdy", "Egyptian", 5),
+        (10, "Maha Hassan", "Egyptian", 6)
     ]
 
     book_details = [
-        ("9780451524935", "1984", "Dystopian", 1, 1949, 5, 0, 1),
-        ("9780747532743", "Harry Potter and the Philosopher's Stone", "Fantasy", 2, 1997, 3, 1, 2),
-        ("9780486280615", "The Adventures of Huckleberry Finn", "Adventure", 3, 1884, 2, 0, 3)
+        ("9789997476813", "موسم الهجرة إلى الشمال", "Fiction", 1, 1966, 10, 2, 2),
+        ("9789770911167", "الأيام", "Biography", 2, 1929, 7, 3, 3),
+        ("9789775052162", "جمهورية كأن", "Drama", 3, 1967, 5, 1, 4),
+        ("9789775231981", "تحت سقف واحد", "Fiction", 4, 1992, 8, 4, 5),
+        ("9789774893264", "الجنرال في متاهة", "Historical Fiction", 5, 2002, 6, 2, 6),
+        ("9789772563541", "الشرف", "Drama", 6, 1996, 12, 0, 2),
+        ("9789776438436", "عمارة يعقوبيان", "Fiction", 7, 2002, 15, 5, 3),
+        ("9789776394655", "أشياء خافتة", "Poetry", 8, 2001, 4, 1, 4),
+        ("9789771430561", "عائلة هاربين من الرياح", "Novel", 9, 1999, 11, 3, 5),
+        ("9789775690989", "حكايتي مع البحر", "Adventure", 10, 2008, 9, 0, 6)
     ]
 
     book_copies = [
-        (1, "Available", "9780451524935", 1),
-        (2, "Available", "9780451524935", 1),
-        (3, "Available", "9780747532743", 2),
-        (4, "Available", "9780747532743", 2),
-        (5, "Available", "9780486280615", 3)
+        (1, "Available", "9789997476813", 2),
+        (2, "Available", "9789997476813", 2),
+        (3, "Available", "9789770911167", 3),
+        (4, "Available", "9789770911167", 3),
+        (5, "Available", "9789775052162", 4),
+        (6, "Available", "9789775052162", 4),
+        (7, "Available", "9789775231981", 5),
+        (8, "Available", "9789775231981", 5),
+        (9, "Available", "9789774893264", 6),
+        (10, "Available", "9789774893264", 6),
+        (11, "Available", "9789772563541", 2),
+        (12, "Available", "9789772563541", 2),
+        (13, "Available", "9789776438436", 3),
+        (14, "Available", "9789776438436", 3),
+        (15, "Available", "9789776394655", 4),
+        (16, "Available", "9789776394655", 4),
+        (17, "Available", "9789771430561", 5),
+        (18, "Available", "9789771430561", 5),
+        (19, "Available", "9789775690989", 6),
+        (20, "Available", "9789775690989", 6)
     ]
 
     members = [
-        (1, "John", "Doe", "123 Elm Street", "555-1234", "john.doe@example.com", 1),
-        (2, "Emily", "Clark", "456 Oak Avenue", "555-5678", "emily.clark@example.com", 2),
-        (3, "Michael", "Smith", "789 Pine Road", "555-9012", "michael.smith@example.com", 3)
+        (1, "Omar", "Hassan", "El-Maadi, Cairo", "01112345678", "omar.hassan@library.com", 2),
+        (2, "Mona", "Gamal", "Nasr City, Cairo", "01098765432", "mona.gamal@library.com", 3),
+        (3, "Ali", "Mahmoud", "Helwan, Cairo", "01234567890", "ali.mahmoud@library.com", 4),
+        (4, "Sara", "Ahmed", "Zamalek, Cairo", "01011223344", "sara.ahmed@library.com", 5),
+        (5, "Hossam", "El-Banna", "Dokki, Cairo", "01155667788", "hossam.elbanna@library.com", 6),
+        (6, "Laila", "Fahmy", "Mohandessin, Cairo", "01022334455", "laila.fahmy@library.com", 2),
+        (7, "Amira", "Mohamed", "New Cairo, Cairo", "01177665544", "amira.mohamed@library.com", 3),
+        (8, "Mohamed", "El-Sayed", "6th of October, Giza", "01233445566", "mohamed.elsayed@library.com", 4),
+        (9, "Tarek", "El-Shazly", "Maadi, Cairo", "01188776655", "tarek.elshazly@library.com", 5),
+        (10, "Mariam", "Rashad", "Nasr City, Cairo", "01022334488", "mariam.rashad@library.com", 6)
     ]
 
     borrows = [
-        (1, "2024-12-01","2024-12-11", "2024-12-10", 10, 2,'Yes', 1, 1),
-        (2, "2024-12-05" ,"2024-12-15", "2024-12-15", 10, 4,'Yes', 2, 2),
-        (3, "2024-12-07","2024-12-21", None, 14, 5,'No', 3, 3)  # لا تزال مستعارة
+        (1, "2024-12-01", "2024-12-11", "2024-12-10", 10, 2, 'Yes', 2, 1),
+        (2, "2024-12-05", "2024-12-15", "2024-12-15", 10, 4, 'Yes', 3, 2),
+        (3, "2024-12-07", "2024-12-21", None, 14, 5, 'No', 4, 3),
+        (4, "2024-12-10", "2024-12-20", None, 10, 6, 'No', 5, 4),
+        (5, "2024-12-12", "2024-12-22", None, 10, 7, 'No', 6, 5),
+        (6, "2024-12-15", "2024-12-25", None, 10, 8, 'No', 2, 6),
+        (7, "2024-12-18", "2024-12-28", None, 10, 9, 'No', 3, 7),
+        (8, "2024-12-20", "2024-12-30", None, 10, 10, 'No', 4, 8),
+        (9, "2024-12-23", "2024-12-31", None, 10, 11, 'No', 5, 9),
+        (10, "2024-12-25", "2025-01-04", None, 10, 12, 'No', 6, 10)
     ]
+
     def insert_data():
         cursor.executemany("INSERT OR IGNORE INTO Employee VALUES (?, ?, ?, ?, ?)", employees)
         cursor.executemany("INSERT OR IGNORE INTO Author VALUES (?, ?, ?, ?)", authors)
