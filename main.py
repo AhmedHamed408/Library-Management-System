@@ -8,7 +8,6 @@ def main():
     window = ctk.CTk()
     window.title("Library Management System")   
     window.geometry('850x650')
-    window.resizable(False, False)
     creat_DataBase()
     window.iconbitmap("images/iconwindow.ico")
     
