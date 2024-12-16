@@ -1,14 +1,15 @@
 import sqlite3
 
 def creat_DataBase():
-    # اسم ملف قاعدة البيانات
+ 
     db_file = "library.db"
 
-    # الاتصال بقاعدة البيانات (إنشاء إذا لم تكن موجودة)
+   
     conn = sqlite3.connect(db_file)
+    conn.execute("PRAGMA foreign_keys = ON;")  
     cursor = conn.cursor()
+    
 
-    # إنشاء الجداول
     cursor.executescript("""
     -- إنشاء جدول الموظفين
     CREATE TABLE IF NOT EXISTS Employee (
@@ -87,7 +88,6 @@ def creat_DataBase():
     FOREIGN KEY (Author_ID) REFERENCES Author(Author_ID) ON DELETE SET NULL
 );
 """)
-    # إدخال البيانات الأولية
     employees = [
         (1, "Ahmed", "Hamed", "ah456408@gmail.com", None),
         (2, "Ahmed", "Aly", "Ahmedaly@gmail.com", 1),
@@ -128,7 +128,6 @@ def creat_DataBase():
         (2, "2024-12-05" ,"2024-12-15", "2024-12-15", 10, 4,'Yes', 2, 2),
         (3, "2024-12-07","2024-12-21", None, 14, 5,'No', 3, 3)  # لا تزال مستعارة
     ]
-    # إدخال البيانات إلى الجداول
     def insert_data():
         cursor.executemany("INSERT OR IGNORE INTO Employee VALUES (?, ?, ?, ?, ?)", employees)
         cursor.executemany("INSERT OR IGNORE INTO Author VALUES (?, ?, ?, ?)", authors)
@@ -136,10 +135,8 @@ def creat_DataBase():
         cursor.executemany("INSERT OR IGNORE INTO Book_Copy VALUES (?, ?, ?, ?)", book_copies)
         cursor.executemany("INSERT OR IGNORE INTO Member VALUES (?, ?, ?, ?, ?, ?, ?)", members)
         cursor.executemany("INSERT OR IGNORE INTO Borrow VALUES (?,?, ?, ?, ?, ?, ?, ?,?)", borrows)
-    # استدعاء الدالة
     insert_data()
 
-    # حفظ التغييرات وإغلاق الاتصال
     conn.commit()
     conn.close()
 

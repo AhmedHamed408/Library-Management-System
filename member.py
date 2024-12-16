@@ -192,19 +192,40 @@ def create_member_window(root, menu_frame, employee_id_value):
         member_id = tree.item(selected)["values"][0]
 
         try:
+            # Connect to the database
             con = sqlite3.connect('library.db')
             cur = con.cursor()
+
+            # Enable foreign key constraints for this connection
+            cur.execute("PRAGMA foreign_keys = ON;")
+
+            # Attempt to delete the member
             cur.execute("DELETE FROM Member WHERE Member_ID = ?", (member_id,))
+            
+            # Commit the changes
             con.commit()
+
+            # Update the status to show success
             status_label.configure(text="Success: Member deleted successfully!", text_color="green")
+
+            # Refresh the members list
             load_members()
+
+            # Clear any other fields if necessary
             clear_fields()
-        except Exception as e:
+
+        except sqlite3.IntegrityError as e:
+            # Handle foreign key constraint violation (e.g., member has active borrow records)
             status_label.configure(text=f"Error: {e}", text_color="red")
+        
+        except Exception as e:
+            # Handle other exceptions
+            status_label.configure(text=f"Error: {e}", text_color="red")
+
         finally:
+            # Close the connection
             if con:
                 con.close()
-
 
     def clear_status():
         status_label.configure(text="")

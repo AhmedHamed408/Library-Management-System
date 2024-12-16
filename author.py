@@ -140,15 +140,36 @@ def create_author_window(root, menu_frame, empid):
 
         author_id = tree.item(selected)["values"][0]
 
+        # Connect to the database
         con = sqlite3.connect('library.db')
         cur = con.cursor()
-        cur.execute("DELETE FROM Author WHERE Author_ID = ?", (author_id,))
-        con.commit()
-        con.close()
 
+        # Enable foreign key constraints for this connection
+        cur.execute("PRAGMA foreign_keys = ON;")
+
+        try:
+            # Attempt to delete the author
+            cur.execute("DELETE FROM Author WHERE Author_ID = ?", (author_id,))
+            
+            # Commit changes
+            con.commit()
+
+            # Update the status to show success
+            update_status("Author deleted successfully.")
+
+            # Refresh the author list
+            load_authors()
+
+        except sqlite3.IntegrityError as e:
+            # Handle foreign key constraint violation (e.g., author is referenced in Book_Details)
+            update_status(f"Error: {e}", error=True)
+
+        finally:
+            # Close the connection
+            con.close()
+
+        # Clear any other fields if necessary
         clear_fields()
-        load_authors()
-        update_status("Author deleted successfully.")
 
     def search_authors():
         filter_name = search_entry.get()

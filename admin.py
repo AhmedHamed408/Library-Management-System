@@ -145,6 +145,7 @@ def admin_page(root):
         Email_var.set(values[3])
         Manager_ID_var.set(values[4] if values[4] != "None" else "")
 
+
     def delete_employee():
         selected_item = tree.focus()
         if not selected_item:
@@ -152,11 +153,34 @@ def admin_page(root):
             return
 
         employee_id = tree.item(selected_item)["values"][0]
-        cursor.execute("DELETE FROM Employee WHERE Employee_ID=?", (employee_id,))
-        conn.commit()
 
-        update_status("Employee deleted successfully!", "green")
-        display_employees()
+        # Connect to the database
+        conn = sqlite3.connect("library.db")
+        cursor = conn.cursor()
+        
+        # Enable foreign key constraints for this connection
+        cursor.execute("PRAGMA foreign_keys = ON;")
+
+        try:
+            # Attempt to delete the employee
+            cursor.execute("DELETE FROM Employee WHERE Employee_ID=?", (employee_id,))
+            
+            # Commit changes
+            conn.commit()
+
+            # Update the status to show success
+            update_status("Employee deleted successfully!", "green")
+            
+            # Refresh the display of employees
+            display_employees()
+
+        except sqlite3.IntegrityError as e:
+            # Handle foreign key constraint violation (e.g., employee is referenced elsewhere)
+            update_status(f"Error: {e}", "red")
+        
+        finally:
+            # Close the connection
+            conn.close()
 
     def search_employee():
         search_term = search_var.get()

@@ -120,6 +120,7 @@ def create_book_copy_window(root , menu_frame,emp_id):
         conn.close()
         return exists
     
+
     def delete_book():
         selected_item = tree.focus()
         if not selected_item:
@@ -128,19 +129,34 @@ def create_book_copy_window(root , menu_frame,emp_id):
 
         book_id = tree.item(selected_item)["values"][0]
 
-        cursor.execute("SELECT COUNT(*) FROM Borrow WHERE Book_ID=?", (book_id,))
-        borrowed_count = cursor.fetchone()[0]
+        # Connect to the database
+        conn = sqlite3.connect("library.db")
+        cursor = conn.cursor()
+        
+        # Enable foreign key constraints for this connection
+        cursor.execute("PRAGMA foreign_keys = ON;")
 
-        if borrowed_count > 0:
-            update_status("Error: Book cannot be deleted because it is currently borrowed or borrowed befor.", "red")
-            return
-
-        cursor.execute("DELETE FROM Book_Copy WHERE Book_ID=?", (book_id,))
-        conn.commit()
-
-        update_status("Book deleted successfully!", "green")
-        display_book_copies()
+        try:
+            # Execute the DELETE statement
+            cursor.execute("DELETE FROM Book_Copy WHERE Book_ID=?", (book_id,))
             
+            # Commit changes
+            conn.commit()
+
+            # Update the status to show success
+            update_status("Book deleted successfully!", "green")
+            
+            # Refresh the display of book copies
+            display_book_copies()
+
+        except sqlite3.IntegrityError as e:
+            # Handle foreign key constraint violation
+            update_status(f"Error: {e}", "red")
+        
+        finally:
+            # Close the connection
+            conn.close()
+        
     def search_book_copy():
         search_term = search_var.get()
         if not search_term:

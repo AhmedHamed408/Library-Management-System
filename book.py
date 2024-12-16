@@ -7,7 +7,6 @@ import sqlite3
 
 def create_book_window(root , menu_frame,employee_id_value):
     from menu import create_menu_window 
-    ###############################
 
     def check_mood_status():
 
@@ -46,6 +45,7 @@ def create_book_window(root , menu_frame,employee_id_value):
             style.map("Treeview.Heading", background=[("active", "#F1F1F1")])  # Keep header active state as light
 
 
+    ###############################  
     # =========================Frames=========================
     main_frame = ctk.CTkFrame(root)
     main_frame.place(relx=0, rely=0, relwidth=1, relheight=1)
@@ -66,6 +66,7 @@ def create_book_window(root , menu_frame,employee_id_value):
         entry_searsh_title.delete(0, 'end')
     def go_back():
         
+        
         main_frame.destroy()
         create_menu_window(root , employee_id_value)
  
@@ -84,6 +85,7 @@ def create_book_window(root , menu_frame,employee_id_value):
         command=go_back
     )
     back_button.place(relx=0.03, rely=0.03, anchor="nw")  
+
 
     
 
@@ -118,23 +120,23 @@ def create_book_window(root , menu_frame,employee_id_value):
     label= ctk.CTkLabel(fr1, text="book" , font=("Arial", 24,"bold"))
     label.place(relx=0.5, rely=0.05)
 
-    label_auther = ctk.CTkLabel(fr1, text="Author ID:" , font=("", 12))
+    label_auther = ctk.CTkLabel(fr1, text="Author ID:" )
     label_auther.place(relx=0.1, rely=0.20)
 
-    label_pup_year = ctk.CTkLabel(fr1, text="Publishe _Year:", text_color='#0c9f15', font=("", 12))
+    label_pup_year = ctk.CTkLabel(fr1, text="Publishe _Year:")
     label_pup_year.place(relx=0.1, rely=0.35)
 
-    label_title = ctk.CTkLabel(fr1, text="Title:", font=("", 12))
+    label_title = ctk.CTkLabel(fr1, text="Title:")
     label_title.place(relx=0.1, rely=0.50)
 
-    label_category= ctk.CTkLabel(fr1, text="category" , font=("", 12))
+    label_category= ctk.CTkLabel(fr1, text="category" )
     label_category.place(relx=0.65, rely=0.20)
 
 
-    label_isbn = ctk.CTkLabel(fr1, text="ISBN :" , font=("", 12))
+    label_isbn = ctk.CTkLabel(fr1, text="ISBN :" )
     label_isbn.place(relx=0.65, rely=0.35)
 
-    label_masege=ctk.CTkLabel (fr1, text=" ", font=("", 12))
+    label_masege=ctk.CTkLabel (fr1, text=" ")
     label_masege.place(relx=0.8, rely=0.50)   
   
     # ===========================Functions=======================   
@@ -185,14 +187,16 @@ def create_book_window(root , menu_frame,employee_id_value):
         name = entry_searsh_title.get().strip().lower()
         conn=sqlite3.connect("library.db")
         cursor=conn.cursor()
-        cursor.execute("SELECT * FROM Book_Details WHERE Title  =? or ISBN =? ",(name,name,))
+        cursor.execute("SELECT * FROM Book_Details WHERE Title LIKE ? OR ISBN LIKE ?", (f'%{name}%', f'%{name}%'))
         rows=cursor.fetchall()
         if rows:
             found =True
             for row in rows:
                 tree.insert("","end",values=row)
+            masge("the book is found",'green')
         if not found:
             masge("the book not found",'red')
+            addtree()
             return            
         conn.commit()
         conn.close()
@@ -244,23 +248,43 @@ def create_book_window(root , menu_frame,employee_id_value):
 
 
     def delete():
-
-        name = entry_searsh_title.get().strip().lower()
+        name = entry_searsh_title.get().strip().upper()
         if not name:
-            masge("please enter the ISBN or title",'red')
+            masge("please enter the ISBN or title", 'red')
             return
-        conn=sqlite3.connect("library.db")
-        cursor=conn.cursor()
+
+        # Connect to the database
+        conn = sqlite3.connect("library.db")
+        cursor = conn.cursor()
         
-        cursor.execute("DELETE FROM Book_Details WHERE Title =? OR ISBN =?",(name,name,))
-        conn.commit()
-        conn.close()
-        entry_searsh_title.delete(0, 'end')
-        masge("the book is deleted ","green")
-        for item in tree.get_children():
-           tree.delete(item)
-        addtree()
-        reset()
+        # Enable foreign key constraints for this connection
+        cursor.execute("PRAGMA foreign_keys = ON;")
+        
+        try:
+            # Execute the DELETE statement
+            cursor.execute("DELETE FROM Book_Details WHERE Title LIKE ? OR ISBN LIKE ?", (f'%{name}%', f'%{name}%'))
+            
+            # Commit changes
+            conn.commit()
+            
+            # Show success message
+            masge("the book is deleted", "green")
+            
+            # Clear the entry field and update the tree
+            entry_searsh_title.delete(0, 'end')
+            for item in tree.get_children():
+                tree.delete(item)
+            addtree()
+            reset()
+
+        except sqlite3.IntegrityError as e:
+            # Handle foreign key constraint violation
+            masge(f"Error: {e}", "red")
+
+        finally:
+            # Close the connection
+            conn.close()
+
     def updete():
         try:
            auther = int(entry_auther.get())
@@ -317,7 +341,8 @@ def create_book_window(root , menu_frame,employee_id_value):
 
 
     tree.pack(fill="both", expand=True)
-    
+
+
     # ==================Buttons====================================
     but_addbook = ctk.CTkButton(fr1, text="Add Book", command=add)
     but_addbook.place(relx=0.65, rely=0.8, relwidth=0.15)
@@ -365,9 +390,7 @@ def create_book_window(root , menu_frame,employee_id_value):
 
     conn.commit()
     conn.close()
-    
     check_mood_status()
-    
     addtree()
 
     
