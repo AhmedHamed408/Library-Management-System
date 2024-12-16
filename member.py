@@ -338,6 +338,20 @@ def create_member_window(root, menu_frame, employee_id_value):
 
     member_id_entry.bind("<FocusOut>", lambda event: populate_employee_id())
 
+   
+
+    btn_frame = ctk.CTkFrame(frame_2)
+    btn_frame.pack(fill="x", pady=10,padx=70)
+
+    add_btn = ctk.CTkButton(btn_frame, text="Add", command=add_member)
+    add_btn.grid(row=0, column=0, padx=50)
+
+    update_btn = ctk.CTkButton(btn_frame, text="Update", command=update_member)
+    update_btn.grid(row=0, column=1, padx=10)
+
+    delete_btn = ctk.CTkButton(btn_frame, text="Delete", command=delete_member)
+    delete_btn.grid(row=0, column=2, padx=10)
+
     search_frame = ctk.CTkFrame(frame_2)
     search_frame.pack(fill="x", padx=70, pady=10)
 
@@ -352,20 +366,6 @@ def create_member_window(root, menu_frame, employee_id_value):
     clear_search_btn = ctk.CTkButton(search_frame, text="Clear Search", command=clear_search)
     clear_search_btn.grid(row=0, column=2, padx=10, pady=5)
 
-
-    btn_frame = ctk.CTkFrame(frame_2)
-    btn_frame.pack(fill="x", pady=10,padx=70)
-
-    add_btn = ctk.CTkButton(btn_frame, text="Add", command=add_member)
-    add_btn.grid(row=0, column=0, padx=40)
-
-    update_btn = ctk.CTkButton(btn_frame, text="Update", command=update_member)
-    update_btn.grid(row=0, column=1, padx=10)
-
-    delete_btn = ctk.CTkButton(btn_frame, text="Delete", command=delete_member)
-    delete_btn.grid(row=0, column=2, padx=10)
-
-    
 
     tree_frame = ctk.CTkFrame(frame_2)
     tree_frame.pack(fill="both", expand=True, padx=20, pady=10)
