@@ -11,7 +11,7 @@ def create_book_window(root , menu_frame,employee_id_value):
     def check_mood_status():
 
         if ctk.get_appearance_mode() == "Dark":
-            style = ttk.Style()
+            style = ttk.Style() 
             style.theme_use("clam")  
             style.configure("Treeview", 
                             background="#2b2b2b", 
@@ -31,7 +31,7 @@ def create_book_window(root , menu_frame,employee_id_value):
             style = ttk.Style()
             style.theme_use("clam")
             style.configure("Treeview", 
-                            background="#FFFFFF",  # Light background
+                            background="#FFFFFF",  # Light backgroundd
                             foreground="#000000",  # Dark text color
                             rowheight=25, 
                             fieldbackground="#FFFFFF",  # Light background for fields
