@@ -16,12 +16,12 @@ def create_member_window(root, menu_frame, employee_id_value):
                             foreground="white", 
                             rowheight=25, 
                             fieldbackground="#2b2b2b", 
-                            font=("Arial", 14))  
+                            font=("Arial", 12))  
             style.map("Treeview", background=[("selected", "#4CAF50")])
             style.configure("Treeview.Heading", 
                             background="#212121", 
                             foreground="white", 
-                            font=("Arial", 16))   
+                            font=("Arial", 14))   
             style.map("Treeview.Heading", background=[("active", "#212121")])
             title.configure(text_color="white")
 
@@ -34,13 +34,13 @@ def create_member_window(root, menu_frame, employee_id_value):
                             foreground="#000000",  
                             rowheight=25, 
                             fieldbackground="#FFFFFF",  
-                            font=("Arial", 14))  
+                            font=("Arial", 12))  
             style.map("Treeview", background=[("selected", "#4CAF50")])  
 
             style.configure("Treeview.Heading", 
                             background="#F1F1F1",  
                             foreground="#000000",  
-                            font=("Arial", 16))   
+                            font=("Arial", 14))   
             style.map("Treeview.Heading", background=[("active", "#F1F1F1")])  
             title.configure(text_color="black")
 
@@ -293,7 +293,7 @@ def create_member_window(root, menu_frame, employee_id_value):
     frame_2 = ctk.CTkFrame(master=root)
     frame_2.place(relx=0, rely=0, relwidth=1, relheight=1)
 
-    title = ctk.CTkLabel(frame_2, text="Member Management", font=("Arial", 20))
+    title = ctk.CTkLabel(frame_2, text="Member Management", font=("Arial", 20 , "bold"))
     title.pack(pady=10)
 
    

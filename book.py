@@ -18,12 +18,12 @@ def create_book_window(root , menu_frame,employee_id_value):
                             foreground="white", 
                             rowheight=25, 
                             fieldbackground="#2b2b2b", 
-                            font=("Arial", 14))  
+                            font=("Arial", 12))  
             style.map("Treeview", background=[("selected", "#4CAF50")])
             style.configure("Treeview.Heading", 
                             background="#212121", 
                             foreground="white", 
-                            font=("Arial", 16))   
+                            font=("Arial", 12))   
             style.map("Treeview.Heading", background=[("active", "#212121")])
 
         else:
@@ -31,19 +31,18 @@ def create_book_window(root , menu_frame,employee_id_value):
             style = ttk.Style()
             style.theme_use("clam")
             style.configure("Treeview", 
-                            background="#FFFFFF",  # Light backgroundd
-                            foreground="#000000",  # Dark text color
+                            background="#FFFFFF",  
+                            foreground="#000000",  
                             rowheight=25, 
-                            fieldbackground="#FFFFFF",  # Light background for fields
-                            font=("Arial", 14))  
-            style.map("Treeview", background=[("selected", "#4CAF50")])  # Keep the selected color as it is
+                            fieldbackground="#FFFFFF",  
+                            font=("Arial", 12))  
+            style.map("Treeview", background=[("selected", "#4CAF50")]) 
 
             style.configure("Treeview.Heading", 
-                            background="#F1F1F1",  # Lighter background for the header
-                            foreground="#000000",  #
-                            font=("Arial", 16))   
-            style.map("Treeview.Heading", background=[("active", "#F1F1F1")])  # Keep header active state as light
-
+                            background="#F1F1F1", 
+                            foreground="#000000", 
+                            font=("Arial", 12))   
+            style.map("Treeview.Heading", background=[("active", "#F1F1F1")]) 
 
     ###############################  
     # =========================Frames=========================
@@ -66,7 +65,7 @@ def create_book_window(root , menu_frame,employee_id_value):
         combo_category.set("novels")
         entry_search_title.delete(0, 'end')
     def go_back():
-
+        
         main_frame.destroy()
         create_menu_window(root , employee_id_value)
  
@@ -120,19 +119,19 @@ def create_book_window(root , menu_frame,employee_id_value):
 
 
     # ==========================Labels==========================
-    label= ctk.CTkLabel(fr1, text="book" , font=("Arial", 24,"bold"))
+    label= ctk.CTkLabel(fr1, text="Book Details" , font=("Arial", 24,"bold"))
     label.place(relx=0.5, rely=0.05)
 
     label_author = ctk.CTkLabel(fr1, text="Author ID:" )
     label_author.place(relx=0.1, rely=0.20)
 
-    label_pup_year = ctk.CTkLabel(fr1, text="Publishe _Year:")
+    label_pup_year = ctk.CTkLabel(fr1, text="Publishe Year:")
     label_pup_year.place(relx=0.1, rely=0.50)
 
     label_title = ctk.CTkLabel(fr1, text="Title:")
     label_title.place(relx=0.65, rely=0.35)
 
-    label_category= ctk.CTkLabel(fr1, text="category" )
+    label_category= ctk.CTkLabel(fr1, text="Category" )
     label_category.place(relx=0.65, rely=0.20)
 
 
@@ -360,7 +359,10 @@ def create_book_window(root , menu_frame,employee_id_value):
             category = combo_category.get()
             author_id = entry_author.get().strip()  
             author_id2 = entry_author2.get().strip()  
-
+            item = tree.get_children()[0]
+            if item !=isbn:
+                masge("isbn cannot update",'red')
+                return
             # Validate required inputs
             if not isbn or not title or not pub_year or not author_id:
                 masge("ISBN, Title, Publication Year, and Author ID are required", "red")
@@ -421,33 +423,37 @@ def create_book_window(root , menu_frame,employee_id_value):
             masge(f"Database error: {e}", "red")
 
     # ===========================Treeview==========================
-    columns=("Isbn", "title","category" ,"pub_year","Copies_available","borrowed_copies","Employes_id","author_id1","author_id2")
-    tree = ttk.Treeview(fr2, columns=columns ,show="headings",height=10)
-    
-    tree.heading("Isbn", text="ISBN")
-    tree.heading("title", text="Title")
-    tree.heading("category", text="category")
-    tree.heading("pub_year", text="Publisher_Year")
-    tree.heading("Copies_available", text="Copies_available")
-    tree.heading("borrowed_copies", text="Borrowed Copies")
-    tree.heading("Employes_id", text="Employes_id")
-    tree.heading("author_id1", text="author_id1")
-    tree.heading("author_id2", text="author_id2")
+    columns = ("ISBN", "Title", "Category", "Publish Year", "Copies Available", "Borrowed Copies", "Employee ID", "Author ID1", "Author ID2")
+    tree = ttk.Treeview(fr2, columns=columns, show="headings", height=10)
+
+    tree.heading("ISBN", text="Isbn")
+    tree.heading("Title", text="Title")
+    tree.heading("Category", text="category")
+    tree.heading("Publish Year", text="Publisher_year")
+    tree.heading("Copies Available", text="Copies_available")
+    tree.heading("Borrowed Copies", text="Borrowed_copies")
+    tree.heading("Employee ID", text="Employes_id")
+    tree.heading("Author ID1", text="author_id1")
+    tree.heading("Author ID2", text="author_id2")
 
 
     tree.bind("<<TreeviewSelect>>", on_tree_select)
 
     for col in columns:
         tree.heading(col, text=col)
-        if col == "title":
-            tree.column(col, width=200)
-        elif col == "pub_year":
+        if col == "Title":
+            tree.column(col, width=170)
+        elif col == "Publish Year":
             tree.column(col, width=100)
-        elif col == "author":
-            tree.column(col, width=80)
-        elif col == "category":
+        elif col == "Copies Available":
+            tree.column(col, width=130)
+        elif col == "Author ID1":
+            tree.column(col, width=82)
+        elif col == "Author ID2":
+            tree.column(col, width=85)
+        elif col == "Category":
             tree.column(col, width=100)
-        elif col == "Employes_id":
+        elif col == "Employee ID":
             tree.column(col, width=80)
         else:
             tree.column(col, width=150)

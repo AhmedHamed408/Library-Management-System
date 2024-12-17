@@ -43,7 +43,7 @@ def create_transaction_window(window, menu_frame, employee_ID):
             style.configure("Treeview.Heading", 
                             background="#F1F1F1",   
                             foreground="#000000",  
-                            font=("Arial", 14))   
+                            font=("Arial", 12))   
             style.map("Treeview.Heading", background=[("active", "#F1F1F1")])  
             borrow_label.configure(text_color="black")
 
