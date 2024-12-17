@@ -58,15 +58,15 @@ def create_book_window(root , menu_frame,employee_id_value):
 
     # ===============================fuction=====================
     def reset():
-        entry_auther.delete(0, 'end')
+        entry_author.delete(0, 'end')
+        entry_author2.delete(0, 'end')
         entry_title.delete(0, 'end')
         entry_pub_year.delete(0, 'end')
         entry_isbn.delete(0, 'end')
         combo_category.set("novels")
-        entry_searsh_title.delete(0, 'end')
+        entry_search_title.delete(0, 'end')
     def go_back():
-        
-        
+
         main_frame.destroy()
         create_menu_window(root , employee_id_value)
  
@@ -89,24 +89,27 @@ def create_book_window(root , menu_frame,employee_id_value):
 
     
 
-    entry_auther = ctk.CTkEntry(fr1, placeholder_text="Author ID")
-    entry_auther.place(relx=0.25, rely=0.20, relwidth=0.2)
+    entry_author = ctk.CTkEntry(fr1, placeholder_text="Author ID")
+    entry_author.place(relx=0.25, rely=0.20, relwidth=0.2)
+    
+    entry_author2 = ctk.CTkEntry(fr1, placeholder_text="Another Author ID")
+    entry_author2.place(relx=0.25, rely=0.35, relwidth=0.2)
 
     entry_pub_year = ctk.CTkEntry(fr1, placeholder_text="Publication Year (int)")
-    entry_pub_year.place(relx=0.25, rely=0.35, relwidth=0.2)
+    entry_pub_year.place(relx=0.25, rely=0.50, relwidth=0.2)
 
     entry_title = ctk.CTkEntry(fr1, placeholder_text="Book Title")
-    entry_title.place(relx=0.25, rely=0.50, relwidth=0.2)
+    entry_title.place(relx=0.8, rely=0.35, relwidth=0.2)
 
 
     entry_isbn = ctk.CTkEntry(fr1, placeholder_text="ISBN (int)")
-    entry_isbn.place(relx=0.8, rely=0.35, relwidth=0.2)
+    entry_isbn.place(relx=0.8, rely=0.5, relwidth=0.2)
 
     
   
 
-    entry_searsh_title = ctk.CTkEntry(fr1, placeholder_text="title")
-    entry_searsh_title.place(relx=0.85, rely=0.8, relwidth=0.15)
+    entry_search_title = ctk.CTkEntry(fr1, placeholder_text="title")
+    entry_search_title.place(relx=0.85, rely=0.8, relwidth=0.15)
     op=["novels","scientific books","fiction books","Religious-books","childerns-books"]
 
 
@@ -120,24 +123,24 @@ def create_book_window(root , menu_frame,employee_id_value):
     label= ctk.CTkLabel(fr1, text="book" , font=("Arial", 24,"bold"))
     label.place(relx=0.5, rely=0.05)
 
-    label_auther = ctk.CTkLabel(fr1, text="Author ID:" )
-    label_auther.place(relx=0.1, rely=0.20)
+    label_author = ctk.CTkLabel(fr1, text="Author ID:" )
+    label_author.place(relx=0.1, rely=0.20)
 
     label_pup_year = ctk.CTkLabel(fr1, text="Publishe _Year:")
-    label_pup_year.place(relx=0.1, rely=0.35)
+    label_pup_year.place(relx=0.1, rely=0.50)
 
     label_title = ctk.CTkLabel(fr1, text="Title:")
-    label_title.place(relx=0.1, rely=0.50)
+    label_title.place(relx=0.65, rely=0.35)
 
     label_category= ctk.CTkLabel(fr1, text="category" )
     label_category.place(relx=0.65, rely=0.20)
 
 
     label_isbn = ctk.CTkLabel(fr1, text="ISBN :" )
-    label_isbn.place(relx=0.65, rely=0.35)
+    label_isbn.place(relx=0.65, rely=0.50)
 
     label_masege=ctk.CTkLabel (fr1, text=" ")
-    label_masege.place(relx=0.8, rely=0.50)   
+    label_masege.place(relx=0.3, rely=0.65)   
   
     # ===========================Functions=======================   
     def on_tree_select(event):
@@ -156,15 +159,15 @@ def create_book_window(root , menu_frame,employee_id_value):
 
             combo_category.set(values[2])
 
-            entry_auther.delete(0, 'end')
-            entry_auther.insert(0, values[3])
+            entry_author.delete(0, 'end')
+            entry_author.insert(0, values[3])
 
             entry_pub_year.delete(0, 'end')
             entry_pub_year.insert(0, values[4])
 
 
-            entry_searsh_title.delete(0, 'end')
-            entry_searsh_title.insert(0, values[1])
+            entry_search_title.delete(0, 'end')
+            entry_search_title.insert(0, values[1])
     def masge(x,y):
             label_masege.configure(text=x,text_color=y)
      
@@ -180,11 +183,11 @@ def create_book_window(root , menu_frame,employee_id_value):
         conn.close()
   ################
 
-    def searsh():
+    def search():
         for item in tree.get_children():
             tree.delete(item)
         found=False
-        name = entry_searsh_title.get().strip().lower()
+        name = entry_search_title.get().strip().lower()
         conn=sqlite3.connect("library.db")
         cursor=conn.cursor()
         cursor.execute("SELECT * FROM Book_Details WHERE Title LIKE ? OR ISBN LIKE ?", (f'%{name}%', f'%{name}%'))
@@ -203,52 +206,67 @@ def create_book_window(root , menu_frame,employee_id_value):
 
 
     def add():
-        author = entry_auther.get().strip()
+        author = entry_author.get().strip()
+        author2 = entry_author2.get().strip()  # المؤلف الثاني (اختياري)
         title = entry_title.get().strip()
         pub_year = entry_pub_year.get()
         category = combo_category.get()
-        isbn=entry_isbn.get().strip()
-        
+        isbn = entry_isbn.get().strip()
+
+        # إعادة تحميل البيانات بعد التعديل
         for item in tree.get_children():
             tree.delete(item)
 
-        if  not isbn or not pub_year or not pub_year or not author or not title:
-            masge("must be enter all values","red")
+        # التأكد من وجود البيانات الإلزامية
+        if not isbn or not pub_year or not author or not title:
+            masge("Must enter all required values", "red")
             addtree()
             return
+
         try:
-            author= int(author)
-            pub_year= int(pub_year)
-    
+            author = int(author)
+            pub_year = int(pub_year)
         except ValueError:
-           masge(" Author_ID copies and pup_year must be integer" ,'red')
-           addtree()
-           return
-
-        conn=sqlite3.connect("library.db")
-        cursor=conn.cursor()
-        cursor.execute("SELECT * FROM Book_Details WHERE ISBN =? OR Title=?",(isbn,title,))
-        rows=cursor.fetchall()
-        if rows:
-            masge("a book that alreedy exists",'red')
+            masge("Author ID and Publish Year must be integers", 'red')
             addtree()
             return
-        cursor.execute("SELECT * FROM Book_Details WHERE Author_ID =? ",(int(author),))
-        rows=cursor.fetchall()
-        if rows:
-            masge("the Author_ID is exists",'red')
-            addtree()
-            return
-        cursor.execute('''INSERT INTO Book_Details  (ISBN,Title,Category,Author_ID, Publish_year, Copies_available ,Copies_Borrowed,Employee_ID)  VALUES (?, ?,?,?,?, ?, ?,?)''', (isbn, title,category,author,pub_year,"0","0",employee_id_value))
-        conn.commit()
-        conn.close()
-        masge(f"the {title} is added","green")  
-        addtree()
-        reset()
 
+        conn = sqlite3.connect("library.db")
+        cursor = conn.cursor()
+        try:
+            cursor.execute("SELECT * FROM Book_Details WHERE ISBN =? OR Title=?", (isbn, title))
+            if cursor.fetchall():
+                masge("A book with this ISBN or Title already exists", 'red')
+                addtree()
+                return
+
+            cursor.execute('''INSERT INTO Book_Details 
+                            (ISBN, Title, Category, Publish_year, Copies_available, Copies_Borrowed, Employee_ID) 
+                            VALUES (?, ?, ?, ?, ?, ?, ?)''',
+                        (isbn, title, category, pub_year, 0, 0, employee_id_value))
+
+            cursor.execute("INSERT INTO Book_Authors (ISBN, Author_ID) VALUES (?, ?)", (isbn, author))
+
+            if author2:
+                try:
+                    author2 = int(author2)
+                    cursor.execute("INSERT INTO Book_Authors (ISBN, Author_ID) VALUES (?, ?)", (isbn, author2))
+                except ValueError:
+                    masge("Optional Author ID must be an integer", "red")
+                    addtree()
+                    return
+
+            conn.commit()
+            masge(f"The book '{title}' has been added successfully!", "green")
+            reset()
+        except sqlite3.Error as e:
+            masge(f"Database Error: {e}", "red")
+        finally:
+            conn.close()
+            addtree()
 
     def delete():
-        name = entry_searsh_title.get().strip().upper()
+        name = entry_search_title.get().strip().upper()
         if not name:
             masge("please enter the ISBN or title", 'red')
             return
@@ -271,7 +289,7 @@ def create_book_window(root , menu_frame,employee_id_value):
             masge("the book is deleted", "green")
             
             # Clear the entry field and update the tree
-            entry_searsh_title.delete(0, 'end')
+            entry_search_title.delete(0, 'end')
             for item in tree.get_children():
                 tree.delete(item)
             addtree()
@@ -287,7 +305,7 @@ def create_book_window(root , menu_frame,employee_id_value):
 
     def updete():
         try:
-           auther = int(entry_auther.get())
+           author = int(entry_author.get())
            title = entry_title.get()
            pub_year = entry_pub_year.get()
            category = combo_category.get()
@@ -297,7 +315,7 @@ def create_book_window(root , menu_frame,employee_id_value):
            cursor.execute(  """UPDATE Book_Details
                     SET Title=?, Author_ID=? , Publish_year=?,  Category=?
                     WHERE ISBN=?
-                 """, (title, auther,pub_year,category,isbn))
+                 """, (title, author,pub_year,category,isbn))
            conn.commit()
            conn.commit()
 
@@ -310,13 +328,13 @@ def create_book_window(root , menu_frame,employee_id_value):
            masge("the book is not updet","red")
 
     # ===========================Treeview==========================
-    columns=("Isbn", "title","category", "auther","pub_year","Copies_available","borrowed_copies","Employes_id")
+    columns=("Isbn", "title","category", "author","pub_year","Copies_available","borrowed_copies","Employes_id")
     tree = ttk.Treeview(fr2, columns=columns ,show="headings",height=10)
 
     tree.heading("Isbn", text="ISBN")
     tree.heading("title", text="Title")
     tree.heading("category", text="category")
-    tree.heading("auther", text="Author_ID")
+    tree.heading("author", text="Author_ID")
     tree.heading("pub_year", text="Publisher_Year")
     tree.heading("Copies_available", text="Copies_available")
     tree.heading("borrowed_copies", text="Borrowed Copies")
@@ -329,7 +347,7 @@ def create_book_window(root , menu_frame,employee_id_value):
             tree.column(col, width=300)
         elif col == "pub_year":
             tree.column(col, width=100)
-        elif col == "auther":
+        elif col == "author":
             tree.column(col, width=80)
         elif col == "category":
             tree.column(col, width=100)
@@ -353,7 +371,7 @@ def create_book_window(root , menu_frame,employee_id_value):
     but_delete = ctk.CTkButton(fr1, text="Delete",command=delete)
     but_delete.place(relx=0.25, rely=0.8, relwidth=0.15)
 
-    but_search = ctk.CTkButton(fr1, text="Search",command=searsh)
+    but_search = ctk.CTkButton(fr1, text="Search",command=search)
     but_search.place(relx=0.05, rely=0.8, relwidth=0.15)
 
     conn=sqlite3.connect("library.db")

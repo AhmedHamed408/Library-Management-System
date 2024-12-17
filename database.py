@@ -35,13 +35,11 @@ def creat_DataBase():
         ISBN TEXT PRIMARY KEY,
         Title TEXT NOT NULL,
         Category TEXT,
-        Author_ID INTEGER,
         Publish_year INTEGER,
         Copies_available INTEGER,
         Copies_Borrowed INTEGER,
         Employee_ID INTEGER,
-        FOREIGN KEY (Employee_ID) REFERENCES Employee(Employee_ID) ON DELETE RESTRICT,
-        FOREIGN KEY (Author_ID) REFERENCES Author(Author_ID) ON DELETE SET NULL
+        FOREIGN KEY (Employee_ID) REFERENCES Employee(Employee_ID) ON DELETE RESTRICT
     );
 
     -- إنشاء جدول نسخ الكتب
@@ -84,9 +82,8 @@ def creat_DataBase():
     CREATE TABLE IF NOT EXISTS Book_Authors (
     ISBN TEXT NOT NULL,
     Author_ID INTEGER,
-    FOREIGN KEY (ISBN) REFERENCES Book_Details(ISBN) ON DELETE SET NULL,
-    FOREIGN KEY (Author_ID) REFERENCES Author(Author_ID) ON DELETE SET NULL
-);
+    FOREIGN KEY (ISBN) REFERENCES Book_Details(ISBN) ON DELETE CASCADE
+    );
 """)
     employees = [
         (1, "Ahmed", "Hamed", "ah456408@gmail.com", None),
@@ -111,16 +108,16 @@ def creat_DataBase():
     ]
 
     book_details = [
-        ("9789997476813", "موسم الهجرة إلى الشمال", "Fiction", 1, 1966, 10, 2, 2),
-        ("9789770911167", "الأيام", "Biography", 2, 1929, 7, 3, 3),
-        ("9789775052162", "جمهورية كأن", "Drama", 3, 1967, 5, 1, 4),
-        ("9789775231981", "تحت سقف واحد", "Fiction", 4, 1992, 8, 4, 5),
-        ("9789774893264", "الجنرال في متاهة", "Historical Fiction", 5, 2002, 6, 2, 6),
-        ("9789772563541", "الشرف", "Drama", 6, 1996, 12, 0, 2),
-        ("9789776438436", "عمارة يعقوبيان", "Fiction", 7, 2002, 15, 5, 3),
-        ("9789776394655", "أشياء خافتة", "Poetry", 8, 2001, 4, 1, 4),
-        ("9789771430561", "عائلة هاربين من الرياح", "Novel", 9, 1999, 11, 3, 5),
-        ("9789775690989", "حكايتي مع البحر", "Adventure", 10, 2008, 9, 0, 6)
+        ("9789997476813", "موسم الهجرة إلى الشمال", "Fiction",  1966, 10, 2, 2),
+        ("9789770911167", "الأيام", "Biography",  1929, 7, 3, 3),
+        ("9789775052162", "جمهورية كأن", "Drama", 1967, 5, 1, 4),
+        ("9789775231981", "تحت سقف واحد", "Fiction",1992, 8, 4, 5),
+        ("9789774893264", "الجنرال في متاهة", "Historical Fiction", 2002, 6, 2, 6),
+        ("9789772563541", "الشرف", "Drama",  1996, 12, 0, 2),
+        ("9789776438436", "عمارة يعقوبيان", "Fiction",  2002, 15, 5, 3),
+        ("9789776394655", "أشياء خافتة", "Poetry",  2001, 4, 1, 4),
+        ("9789771430561", "عائلة هاربين من الرياح", "Novel", 1999, 11, 3, 5),
+        ("9789775690989", "حكايتي مع البحر", "Adventure",  2008, 9, 0, 6)
     ]
 
     book_copies = [
@@ -175,7 +172,7 @@ def creat_DataBase():
     def insert_data():
         cursor.executemany("INSERT OR IGNORE INTO Employee VALUES (?, ?, ?, ?, ?)", employees)
         cursor.executemany("INSERT OR IGNORE INTO Author VALUES (?, ?, ?, ?)", authors)
-        cursor.executemany("INSERT OR IGNORE INTO Book_Details VALUES (?, ?, ?, ?, ?, ?, ?, ?)", book_details)
+        cursor.executemany("INSERT OR IGNORE INTO Book_Details VALUES ( ?, ?, ?, ?, ?, ?, ?)", book_details)
         cursor.executemany("INSERT OR IGNORE INTO Book_Copy VALUES (?, ?, ?, ?)", book_copies)
         cursor.executemany("INSERT OR IGNORE INTO Member VALUES (?, ?, ?, ?, ?, ?, ?)", members)
         cursor.executemany("INSERT OR IGNORE INTO Borrow VALUES (?,?, ?, ?, ?, ?, ?, ?,?)", borrows)
