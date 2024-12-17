@@ -40,7 +40,7 @@ def create_book_window(root , menu_frame,employee_id_value):
 
             style.configure("Treeview.Heading", 
                             background="#F1F1F1",  # Lighter background for the header
-                            foreground="#000000",  # Dark text color for the header
+                            foreground="#000000",  #
                             font=("Arial", 16))   
             style.map("Treeview.Heading", background=[("active", "#F1F1F1")])  # Keep header active state as light
 
@@ -70,7 +70,7 @@ def create_book_window(root , menu_frame,employee_id_value):
         main_frame.destroy()
         create_menu_window(root , employee_id_value)
  
-    back_icon = Image.open("images/back.png")  # Ensure the path is correct
+    back_icon = Image.open("images/back.png")  
 
 
    
@@ -157,13 +157,18 @@ def create_book_window(root , menu_frame,employee_id_value):
             entry_title.delete(0, 'end')
             entry_title.insert(0, values[1])
 
+            
             combo_category.set(values[2])
 
             entry_author.delete(0, 'end')
-            entry_author.insert(0, values[3])
+            entry_author.insert(0, values[7])
+
+            entry_author2.delete(0, 'end')
+            entry_author2.insert(0,values[8])
+
 
             entry_pub_year.delete(0, 'end')
-            entry_pub_year.insert(0, values[4])
+            entry_pub_year.insert(0, values[3])
 
 
             entry_search_title.delete(0, 'end')
@@ -173,15 +178,47 @@ def create_book_window(root , menu_frame,employee_id_value):
      
     def addtree():
     #################################
-        conn=sqlite3.connect("library.db")
-        cursor=conn.cursor()
-        cursor.execute("SELECT * FROM Book_Details ")
-        rows=cursor.fetchall()
+        conn = sqlite3.connect("library.db")
+        cursor = conn.cursor()
+    
+    
+        cursor.execute("""
+        SELECT 
+            bd.ISBN, 
+            bd.Title, 
+            bd.Category,
+            bd.Publish_year, 
+            bd.Copies_available, 
+            bd.Copies_Borrowed, 
+            bd.Employee_ID,
+            GROUP_CONCAT(ba.Author_ID) AS Authors
+        FROM 
+            Book_Details AS bd
+        LEFT JOIN 
+            Book_Authors AS ba
+        ON 
+            bd.ISBN = ba.ISBN
+        GROUP BY 
+            bd.ISBN
+    """)
+    
+        rows = cursor.fetchall()
+    
+        for item in tree.get_children():
+           tree.delete(item)
+    
         for row in rows:
-            tree.insert("","end",values=row)
+        
+           authors = row[-1].split(",") if row[-1] else []
+           author_id1 = authors[0] if len(authors) > 0 else None
+           author_id2 = authors[1] if len(authors) > 1 else None
+        
+        
+           tree.insert("", "end", values=(row[0], row[1], row[2], row[3], row[4], row[5], row[6], author_id1, author_id2))
+    
         conn.commit()
         conn.close()
-    ################
+ 
 
     def search():
         for item in tree.get_children():
@@ -273,8 +310,9 @@ def create_book_window(root , menu_frame,employee_id_value):
     def author_exists(author_id):
         conn = sqlite3.connect("library.db")
         cursor = conn.cursor()
-        cursor.execute("SELECT 1 FROM Author WHERE Employee_ID = ?", (author_id,))
+        cursor.execute("SELECT 1 FROM Author WHERE Author_ID LIKE  ?", (author_id,))
         exists = cursor.fetchone() is not None
+        conn.commit()
         conn.close()
         return exists
     
@@ -320,8 +358,8 @@ def create_book_window(root , menu_frame,employee_id_value):
             title = entry_title.get().strip()
             pub_year = entry_pub_year.get().strip()
             category = combo_category.get()
-            author_id = entry_author.get().strip()  # Primary Author (required)
-            author_id2 = entry_author2.get().strip()  # Optional Second Author
+            author_id = entry_author.get().strip()  
+            author_id2 = entry_author2.get().strip()  
 
             # Validate required inputs
             if not isbn or not title or not pub_year or not author_id:
@@ -332,14 +370,17 @@ def create_book_window(root , menu_frame,employee_id_value):
             pub_year = int(pub_year)
             author_id = int(author_id)
             author_id2 = int(author_id2) if author_id2 else None
-
-            # Connect to the database
+            if author_id2:
+                if not author_exists(author_id2):
+                    masge("Author ID didn't exist", 'red')   
+                    addtree()
+                    return
+            if not author_exists(author_id):
+                masge("Another Author ID didn't exist", 'red') 
+                addtree()   
             conn = sqlite3.connect("library.db")
             cursor = conn.cursor()
-            if not author_exists(author_id):
-                masge("Author ID didn't exist", 'red')   
-                addtree()
-                return
+         
             # Update the Book_Details table
             cursor.execute("""
                 UPDATE Book_Details
@@ -380,17 +421,20 @@ def create_book_window(root , menu_frame,employee_id_value):
             masge(f"Database error: {e}", "red")
 
     # ===========================Treeview==========================
-    columns=("Isbn", "title","category", "author","pub_year","Copies_available","borrowed_copies","Employes_id")
+    columns=("Isbn", "title","category" ,"pub_year","Copies_available","borrowed_copies","Employes_id","author_id1","author_id2")
     tree = ttk.Treeview(fr2, columns=columns ,show="headings",height=10)
     
     tree.heading("Isbn", text="ISBN")
     tree.heading("title", text="Title")
     tree.heading("category", text="category")
-    tree.heading("author", text="Author_ID")
     tree.heading("pub_year", text="Publisher_Year")
     tree.heading("Copies_available", text="Copies_available")
     tree.heading("borrowed_copies", text="Borrowed Copies")
     tree.heading("Employes_id", text="Employes_id")
+    tree.heading("author_id1", text="author_id1")
+    tree.heading("author_id2", text="author_id2")
+
+
     tree.bind("<<TreeviewSelect>>", on_tree_select)
 
     for col in columns:

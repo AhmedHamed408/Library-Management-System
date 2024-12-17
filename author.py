@@ -30,18 +30,18 @@ def create_author_window(root, menu_frame, empid):
             style = ttk.Style()
             style.theme_use("clam")
             style.configure("Treeview", 
-                            background="#FFFFFF",  # Light background
-                            foreground="#000000",  # Dark text color
+                            background="#FFFFFF",  
+                            foreground="#000000",  
                             rowheight=25, 
-                            fieldbackground="#FFFFFF",  # Light background for fields
+                            fieldbackground="#FFFFFF",  
                             font=("Arial", 14))  
-            style.map("Treeview", background=[("selected", "#4CAF50")])  # Keep the selected color as it is
+            style.map("Treeview", background=[("selected", "#4CAF50")])  
 
             style.configure("Treeview.Heading", 
-                            background="#F1F1F1",  # Lighter background for the header
-                            foreground="#000000",  # Dark text color for the header
+                            background="#F1F1F1",  
+                            foreground="#000000",  
                             font=("Arial", 16))   
-            style.map("Treeview.Heading", background=[("active", "#F1F1F1")])  # Keep header active state as light
+            style.map("Treeview.Heading", background=[("active", "#F1F1F1")])  
             title.configure(text_color="black")
 
     
@@ -140,36 +140,35 @@ def create_author_window(root, menu_frame, empid):
 
         author_id = tree.item(selected)["values"][0]
 
-        # Connect to the database
+        
         con = sqlite3.connect('library.db')
         cur = con.cursor()
 
-        # Enable foreign key constraints for this connection
+        
         cur.execute("PRAGMA foreign_keys = ON;")
 
         try:
-            # Attempt to delete the author
+            
             cur.execute("DELETE FROM Author WHERE Author_ID = ?", (author_id,))
             
-            # Commit changes
+            
             con.commit()
 
-            # Update the status to show success
+            
             update_status("Author deleted successfully.")
 
-            # Refresh the author list
+            
             load_authors()
 
         except sqlite3.IntegrityError as e:
-            # Handle foreign key constraint violation (e.g., author is referenced in Book_Details)
+            
             update_status(f"Error: {e}", error=True)
 
         finally:
-            # Close the connection
+            
             con.close()
 
-        # Clear any other fields if necessary
-        clear_fields()
+        
 
     def search_authors():
         filter_name = search_entry.get()

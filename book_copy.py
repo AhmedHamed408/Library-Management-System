@@ -44,18 +44,18 @@ def create_book_copy_window(root , menu_frame,emp_id):
             style = ttk.Style()
             style.theme_use("clam")
             style.configure("Treeview", 
-                            background="#FFFFFF",  # Light background
-                            foreground="#000000",  # Dark text color
+                            background="#FFFFFF",
+                            foreground="#000000", 
                             rowheight=25, 
-                            fieldbackground="#FFFFFF",  # Light background for fields
+                            fieldbackground="#FFFFFF",  
                             font=("Arial", 14))  
-            style.map("Treeview", background=[("selected", "#4CAF50")])  # Keep the selected color as it is
+            style.map("Treeview", background=[("selected", "#4CAF50")])
 
             style.configure("Treeview.Heading", 
-                            background="#F1F1F1",  # Lighter background for the header
-                            foreground="#000000",  # Dark text color for the header
+                            background="#F1F1F1",
+                            foreground="#000000",  
                             font=("Arial", 16))   
-            style.map("Treeview.Heading", background=[("active", "#F1F1F1")])  # Keep header active state as light
+            style.map("Treeview.Heading", background=[("active", "#F1F1F1")])   
             book_copy_label.configure(text_color="black")
 
 
@@ -129,32 +129,24 @@ def create_book_copy_window(root , menu_frame,emp_id):
 
         book_id = tree.item(selected_item)["values"][0]
 
-        # Connect to the database
         conn = sqlite3.connect("library.db")
         cursor = conn.cursor()
         
-        # Enable foreign key constraints for this connection
         cursor.execute("PRAGMA foreign_keys = ON;")
 
         try:
-            # Execute the DELETE statement
             cursor.execute("DELETE FROM Book_Copy WHERE Book_ID=?", (book_id,))
             
-            # Commit changes
             conn.commit()
 
-            # Update the status to show success
             update_status("Book deleted successfully!", "green")
             
-            # Refresh the display of book copies
             display_book_copies()
 
         except sqlite3.IntegrityError as e:
-            # Handle foreign key constraint violation
             update_status(f"Error: {e}", "red")
         
         finally:
-            # Close the connection
             conn.close()
         
     def search_book_copy():

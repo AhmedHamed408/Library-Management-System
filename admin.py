@@ -31,18 +31,18 @@ def admin_page(root):
             style = ttk.Style()
             style.theme_use("clam")
             style.configure("Treeview", 
-                            background="#FFFFFF",  # Light background
-                            foreground="#000000",  # Dark text color
+                            background="#FFFFFF",  
+                            foreground="#000000",  
                             rowheight=25, 
-                            fieldbackground="#FFFFFF",  # Light background for fields
+                            fieldbackground="#FFFFFF",  
                             font=("Arial", 14))  
-            style.map("Treeview", background=[("selected", "#4CAF50")])  # Keep the selected color as it is
+            style.map("Treeview", background=[("selected", "#4CAF50")])  
 
             style.configure("Treeview.Heading", 
-                            background="#F1F1F1",  # Lighter background for the header
-                            foreground="#000000",  # Dark text color for the header
+                            background="#F1F1F1",  
+                            foreground="#000000",  
                             font=("Arial", 16))   
-            style.map("Treeview.Heading", background=[("active", "#F1F1F1")])  # Keep header active state as light
+            style.map("Treeview.Heading", background=[("active", "#F1F1F1")])  
             admin_label.configure(text_color="black")
 
 
@@ -158,28 +158,24 @@ def admin_page(root):
         conn = sqlite3.connect("library.db")
         cursor = conn.cursor()
         
-        # Enable foreign key constraints for this connection
+        #foreign key constraints 
         cursor.execute("PRAGMA foreign_keys = ON;")
 
         try:
-            # Attempt to delete the employee
             cursor.execute("DELETE FROM Employee WHERE Employee_ID=?", (employee_id,))
             
-            # Commit changes
             conn.commit()
 
-            # Update the status to show success
             update_status("Employee deleted successfully!", "green")
             
             # Refresh the display of employees
             display_employees()
 
         except sqlite3.IntegrityError as e:
-            # Handle foreign key constraint violation (e.g., employee is referenced elsewhere)
+            # Handle foreign key constraint 
             update_status(f"Error: {e}", "red")
         
         finally:
-            # Close the connection
             conn.close()
 
     def search_employee():

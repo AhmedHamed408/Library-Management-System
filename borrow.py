@@ -33,18 +33,18 @@ def create_transaction_window(window, menu_frame, employee_ID):
             style = ttk.Style()
             style.theme_use("clam")
             style.configure("Treeview", 
-                            background="#FFFFFF",  # Light background
-                            foreground="#000000",  # Dark text color
+                            background="#FFFFFF",  
+                            foreground="#000000",   
                             rowheight=25, 
-                            fieldbackground="#FFFFFF",  # Light background for fields
+                            fieldbackground="#FFFFFF",   
                             font=("Arial", 12))  
-            style.map("Treeview", background=[("selected", "#4CAF50")])  # Keep the selected color as it is
+            style.map("Treeview", background=[("selected", "#4CAF50")])   
 
             style.configure("Treeview.Heading", 
-                            background="#F1F1F1",  # Lighter background for the header
-                            foreground="#000000",  # Dark text color for the header
+                            background="#F1F1F1",   
+                            foreground="#000000",  
                             font=("Arial", 14))   
-            style.map("Treeview.Heading", background=[("active", "#F1F1F1")])  # Keep header active state as light
+            style.map("Treeview.Heading", background=[("active", "#F1F1F1")])  
             borrow_label.configure(text_color="black")
 
 
@@ -66,11 +66,11 @@ def create_transaction_window(window, menu_frame, employee_ID):
     def Is_book_Available(book_id):
         conn = sqlite3.connect("library.db")
         cursor = conn.cursor()
-        # Fetch the Status column for the given Book_ID
+
         cursor.execute("SELECT Status FROM Book_Copy WHERE Book_ID = ?", (book_id,))
         result = cursor.fetchone() 
         conn.close()
-        # If a record is found, return the Status; otherwise, return None
+
         return result[0]== "Available"
     
     def save_to_database(member_id, book_id, days_of_borrowing, employee_ID):
@@ -80,39 +80,39 @@ def create_transaction_window(window, menu_frame, employee_ID):
         due_date =(borrow_date + timedelta(days=days_of_borrowing))
         borrow_date = borrow_date.strftime('%Y-%m-%d')
         Due_date = due_date.strftime('%Y-%m-%d')
-        # Insert into Borrow table
+
         cursor.execute('''INSERT INTO Borrow (Borrow_date,Due_date, Return_date, Borrow_Duration, Book_ID, Employee_ID, Member_ID,Returned) 
                         VALUES (?, ?, ?, ?, ?, ?,?,?)''',
                        (borrow_date,Due_date, None, days_of_borrowing, book_id, employee_ID, member_id,'No'))
-        # Update Returned status in Book_Copy
+
         cursor.execute("UPDATE Book_Copy SET Status = ? WHERE Book_ID = ?", ('Borrowed', book_id))
         conn.commit()
         conn.close()
 
     def load_data_into_table():
-        # فتح الاتصال بقاعدة البيانات
+
         conn = sqlite3.connect("library.db")
         cursor = conn.cursor()
 
-        # استعلام لتحميل البيانات من جداول Borrow و Book_Copy
+
         cursor.execute('''
             SELECT b.Borrow_ID,  b.Borrow_date,b.Due_date , b.Return_date, b.Borrow_Duration, b.Member_ID, b.Employee_ID, b.Book_ID, b.Returned
             FROM Borrow b
         ''')
         
-        # استرجاع جميع الصفوف
+
         rows = cursor.fetchall()
         conn.close()
 
-        # مسح البيانات القديمة من الجدول
+
         for item in table.get_children():
             table.delete(item)
 
-        # إضافة البيانات الجديدة إلى الجدول
+
         for row in rows:
             table.insert("", "end", values=row)
 
-# تأكد من أن هذه الدالة يتم استدعاؤها بعد عملية الحفظ أو تحديث حالة الكتاب
+
     def go_back():
         menu_frame.destroy()
         create_menu_window(window , employee_ID)
@@ -150,7 +150,7 @@ def create_transaction_window(window, menu_frame, employee_ID):
 
         save_to_database(member_id, book_id, days_of_borrowing, employee_ID)
         
-        # تحميل البيانات بعد عملية الحفظ
+
         load_data_into_table()
 
         member_id_entry.delete(0, 'end')

@@ -11,7 +11,7 @@ def creat_DataBase():
     
 
     cursor.executescript("""
-    -- إنشاء جدول الموظفين
+    
     CREATE TABLE IF NOT EXISTS Employee (
         Employee_ID INTEGER PRIMARY KEY AUTOINCREMENT,
         First_name TEXT NOT NULL,
@@ -21,7 +21,6 @@ def creat_DataBase():
         FOREIGN KEY (Manager_ID) REFERENCES Employee(Employee_ID) ON DELETE RESTRICT
     );
 
-    -- إنشاء جدول المؤلفين
     CREATE TABLE IF NOT EXISTS Author (
         Author_ID INTEGER PRIMARY KEY AUTOINCREMENT,
         Author_Name TEXT NOT NULL,
@@ -30,7 +29,6 @@ def creat_DataBase():
         FOREIGN KEY (Employee_ID) REFERENCES Employee(Employee_ID) ON DELETE RESTRICT
     );
 
-    -- إنشاء جدول تفاصيل الكتب
     CREATE TABLE IF NOT EXISTS Book_Details (
         ISBN TEXT PRIMARY KEY,
         Title TEXT NOT NULL,
@@ -42,7 +40,6 @@ def creat_DataBase():
         FOREIGN KEY (Employee_ID) REFERENCES Employee(Employee_ID) ON DELETE RESTRICT
     );
 
-    -- إنشاء جدول نسخ الكتب
     CREATE TABLE IF NOT EXISTS Book_Copy (
         Book_ID INTEGER PRIMARY KEY AUTOINCREMENT,
         Status TEXT CHECK (Status IN ('Available', 'Borrowed')) NOT NULL,
@@ -52,7 +49,6 @@ def creat_DataBase():
         FOREIGN KEY (Employee_ID) REFERENCES Employee(Employee_ID) ON DELETE RESTRICT
     );
 
-    -- إنشاء جدول الأعضاء
     CREATE TABLE IF NOT EXISTS Member (
         Member_ID INTEGER PRIMARY KEY AUTOINCREMENT,
         First_name TEXT NOT NULL,
@@ -63,8 +59,8 @@ def creat_DataBase():
         Employee_ID INTEGER,
         FOREIGN KEY (Employee_ID) REFERENCES Employee(Employee_ID) ON DELETE RESTRICT
     );
-    -- إنشاء جدول الإعارات
-        CREATE TABLE IF NOT EXISTS Borrow (
+
+    CREATE TABLE IF NOT EXISTS Borrow (
         Borrow_ID INTEGER PRIMARY KEY AUTOINCREMENT,
         Borrow_date TEXT NOT NULL,
         Due_date TEXT,
@@ -80,12 +76,15 @@ def creat_DataBase():
     );
 
     CREATE TABLE IF NOT EXISTS Book_Authors (
-    ISBN TEXT NOT NULL,
-    Author_ID INTEGER,
-    PRIMARY KEY (ISBN, Author_ID),
-    FOREIGN KEY (ISBN) REFERENCES Book_Details(ISBN) ON DELETE CASCADE
+        ISBN TEXT NOT NULL,
+        Author_ID INTEGER,
+        PRIMARY KEY (ISBN, Author_ID),
+        FOREIGN KEY (ISBN) REFERENCES Book_Details(ISBN) ON DELETE CASCADE,
+        FOREIGN KEY (Author_ID) REFERENCES Author(Author_ID) ON DELETE RESTRICT
     );
-""")
+    """)
+
+
     employees = [
         (1, "Ahmed", "Hamed", "ah456408@gmail.com", None),
         (2, "Ahmed", "Aly", "Ahmedaly@gmail.com", 1),
@@ -96,52 +95,42 @@ def creat_DataBase():
     ]   
 
     authors = [
-        (1, "Naguib Mahfouz", "Egyptian", 2),
-        (2, "Taha Hussein", "Egyptian", 3),
-        (3, "Youssef Idris", "Egyptian", 4),
-        (4, "Ibrahim Aslan", "Egyptian", 5),
-        (5, "Radwa Ashour", "Egyptian", 6),
-        (6, "Sonallah Ibrahim", "Egyptian", 2),
-        (7, "Alaa Al Aswany", "Egyptian", 3),
-        (8, "Mahmoud El-Wardany", "Egyptian", 4),
-        (9, "Monir Al-Mahdy", "Egyptian", 5),
-        (10, "Maha Hassan", "Egyptian", 6)
+        (1, 'Naguib Mahfouz', 'Egyptian', 2),
+        (2, 'Taha Hussein', 'Egyptian', 3),
+        (3, 'Youssef Ziedan', 'Egyptian', 4),
+        (4, 'Sonallah Ibrahim', 'Egyptian', 5),
+        (5, 'Alaa Al Aswany', 'Egyptian', 2),
+        (6, 'Mohammed Makhzangi', 'Egyptian', 3),
+        (7, 'Zaynab Fawwaz', 'Egyptian', 4),
+        (8, 'Ibrahim Abdel Meguid', 'Egyptian', 5),
+        (9, 'Gamila Shams', 'Egyptian', 2),
+        (10, 'Ahmed Zewail', 'Egyptian', 4)
     ]
 
     book_details = [
-        ("9789997476813", "موسم الهجرة إلى الشمال", "Fiction",  1966, 10, 2, 2),
-        ("9789770911167", "الأيام", "Biography",  1929, 7, 3, 3),
-        ("9789775052162", "جمهورية كأن", "Drama", 1967, 5, 1, 4),
-        ("9789775231981", "تحت سقف واحد", "Fiction",1992, 8, 4, 5),
-        ("9789774893264", "الجنرال في متاهة", "Historical Fiction", 2002, 6, 2, 6),
-        ("9789772563541", "الشرف", "Drama",  1996, 12, 0, 2),
-        ("9789776438436", "عمارة يعقوبيان", "Fiction",  2002, 15, 5, 3),
-        ("9789776394655", "أشياء خافتة", "Poetry",  2001, 4, 1, 4),
-        ("9789771430561", "عائلة هاربين من الرياح", "Novel", 1999, 11, 3, 5),
-        ("9789775690989", "حكايتي مع البحر", "Adventure",  2008, 9, 0, 6)
+        ('978-977-16-5514-2', 'Palace Walk', 'Fiction', 1956, 10, 2, 2),
+        ('978-977-16-1165-9', 'The Days', 'Biography', 1954, 8, 3, 3),
+        ('978-977-72-1883-7', 'Azazeel', 'Historical Fiction', 2008, 15, 5, 4),
+        ('978-977-05-5890-5', 'The Yacoubian Building', 'Drama', 2002, 12, 3, 2),
+        ('978-977-51-7280-5', 'The Invisible Man', 'Fiction', 2006, 20, 4, 3),
+        ('978-977-04-4136-9', 'The Cairo Trilogy', 'Fiction', 2002, 8, 2, 4),
+        ('978-977-21-2053-3', 'In the Eye of the Sun', 'Drama', 1992, 10, 1, 5),
+        ('978-977-16-5545-7', 'The Miramar', 'Fiction', 1967, 5, 1, 2),
+        ('978-977-21-8231-3', 'Midaq Alley', 'Novel', 1947, 9, 4, 3),
+        ('978-977-16-0400-9', 'The Road to Faiyum', 'Fiction', 1997, 7, 2, 4)
     ]
 
     book_copies = [
-        (1, "Available", "9789997476813", 2),
-        (2, "Available", "9789997476813", 2),
-        (3, "Available", "9789770911167", 3),
-        (4, "Available", "9789770911167", 3),
-        (5, "Available", "9789775052162", 4),
-        (6, "Available", "9789775052162", 4),
-        (7, "Available", "9789775231981", 5),
-        (8, "Available", "9789775231981", 5),
-        (9, "Available", "9789774893264", 6),
-        (10, "Available", "9789774893264", 6),
-        (11, "Available", "9789772563541", 2),
-        (12, "Available", "9789772563541", 2),
-        (13, "Available", "9789776438436", 3),
-        (14, "Available", "9789776438436", 3),
-        (15, "Available", "9789776394655", 4),
-        (16, "Available", "9789776394655", 4),
-        (17, "Available", "9789771430561", 5),
-        (18, "Available", "9789771430561", 5),
-        (19, "Available", "9789775690989", 6),
-        (20, "Available", "9789775690989", 6)
+        (1, 'Available', '978-977-16-5514-2', 2),
+        (2, 'Borrowed', '978-977-16-5514-2', 3),
+        (3, 'Available', '978-977-16-1165-9', 3),
+        (4, 'Available', '978-977-72-1883-7', 4),
+        (5, 'Borrowed', '978-977-72-1883-7', 4),
+        (6, 'Available', '978-977-05-5890-5', 5),
+        (7, 'Borrowed', '978-977-05-5890-5', 2),
+        (8, 'Available', '978-977-51-7280-5', 3),
+        (9, 'Available', '978-977-04-4136-9', 4),
+        (10, 'Borrowed', '978-977-21-2053-3', 5)
     ]
 
     members = [
@@ -154,20 +143,42 @@ def creat_DataBase():
         (7, "Amira", "Mohamed", "New Cairo, Cairo", "01177665544", "amira.mohamed@library.com", 3),
         (8, "Mohamed", "El-Sayed", "6th of October, Giza", "01233445566", "mohamed.elsayed@library.com", 4),
         (9, "Tarek", "El-Shazly", "Maadi, Cairo", "01188776655", "tarek.elshazly@library.com", 5),
-        (10, "Mariam", "Rashad", "Nasr City, Cairo", "01022334488", "mariam.rashad@library.com", 6)
+        (10, "Mariam", "Rashad", "Nasr City, Cairo", "01022334488", "mariam.rashad@library.com", 6),
+        (11, 'Ahmed', 'Ali', 'Cairo, Egypt', '01023456789', 'ahmedali@example.com', 2),
+        (12, 'Mona', 'Hassan', 'Giza, Egypt', '01234567890', 'monahassan@example.com', 3),
+        (13, 'Mohamed', 'Salah', 'Alexandria, Egypt', '01122334455', 'mohamedsalah@example.com', 4),
+        (14, 'Fatima', 'Mohamed', 'Cairo, Egypt', '01098765432', 'fatimamohamed@example.com', 2),
+        (15, 'Youssef', 'Fayad', 'Tanta, Egypt', '01566543210', 'yousseffayad@example.com', 3),
+        (16, 'Sara', 'Abdelkader', 'Aswan, Egypt', '01234569876', 'saraabdelkader@example.com', 4),
+        (17, 'Omar', 'Hussein', 'Cairo, Egypt', '01011223344', 'omarhussein@example.com', 5),
+        (18, 'Rania', 'El-Shazly', 'Giza, Egypt', '01022334455', 'raniaelshazly@example.com', 2),
+        (19, 'Yasmine', 'Tarek', 'Cairo, Egypt', '01066778899', 'yasminetarek@example.com', 3),
+        (20, 'Hassan', 'Gamal', 'Alexandria, Egypt', '01124567890', 'hassangamal@example.com', 4)
     ]
 
     borrows = [
-        (1, "2024-12-01", "2024-12-11", "2024-12-10", 10, 2, 'Yes', 2, 1),
-        (2, "2024-12-05", "2024-12-15", "2024-12-15", 10, 4, 'Yes', 3, 2),
-        (3, "2024-12-07", "2024-12-21", None, 14, 5, 'No', 4, 3),
-        (4, "2024-12-10", "2024-12-20", None, 10, 6, 'No', 5, 4),
-        (5, "2024-12-12", "2024-12-22", None, 10, 7, 'No', 6, 5),
-        (6, "2024-12-15", "2024-12-25", None, 10, 8, 'No', 2, 6),
-        (7, "2024-12-18", "2024-12-28", None, 10, 9, 'No', 3, 7),
-        (8, "2024-12-20", "2024-12-30", None, 10, 10, 'No', 4, 8),
-        (9, "2024-12-23", "2024-12-31", None, 10, 11, 'No', 5, 9),
-        (10, "2024-12-25", "2025-01-04", None, 10, 12, 'No', 6, 10)
+        (1, '2024-12-01', '2024-12-15', '2024-12-10', 14, 1, 'Yes', 2, 1),
+        (2, '2024-12-02', '2024-12-16', '2024-12-12', 14, 2, 'Yes', 3, 2),
+        (3, '2024-12-03', '2024-12-17', None, 14, 3, 'No', 4, 3),
+        (4, '2024-12-04', '2024-12-18', None, 14, 4, 'No', 2, 4),
+        (5, '2024-12-05', '2024-12-19', None, 14, 5, 'No', 3, 5),
+        (6, '2024-12-06', '2024-12-20', None, 14, 6, 'No', 4, 6),
+        (7, '2024-12-07', '2024-12-21', None, 14, 7, 'No', 2, 7),
+        (8, '2024-12-08', '2024-12-22', None, 14, 8, 'No', 3, 8),
+        (9, '2024-12-09', '2024-12-23', None, 14, 9, 'No', 4, 9),
+        (10, '2024-12-10', '2024-12-24', None, 14, 10, 'No', 5, 10)
+    ]
+    Book_Authors = [
+        ('978-977-16-5514-2', 1),
+        ('978-977-16-1165-9', 2),
+        ('978-977-72-1883-7', 3),
+        ('978-977-05-5890-5', 4),
+        ('978-977-51-7280-5', 5),
+        ('978-977-04-4136-9', 6),
+        ('978-977-21-2053-3', 7),
+        ('978-977-16-5545-7', 8),
+        ('978-977-21-8231-3', 9),
+        ('978-977-16-0400-9', 10) 
     ]
 
     def insert_data():
@@ -177,9 +188,11 @@ def creat_DataBase():
         cursor.executemany("INSERT OR IGNORE INTO Book_Copy VALUES (?, ?, ?, ?)", book_copies)
         cursor.executemany("INSERT OR IGNORE INTO Member VALUES (?, ?, ?, ?, ?, ?, ?)", members)
         cursor.executemany("INSERT OR IGNORE INTO Borrow VALUES (?,?, ?, ?, ?, ?, ?, ?,?)", borrows)
+        cursor.executemany("INSERT OR IGNORE INTO Book_Authors VALUES (?,?)", Book_Authors)
+    
     insert_data()
 
     conn.commit()
     conn.close()
 
-    print("Database created and data inserted successfully!")
+    print("Database Connected Successfully")

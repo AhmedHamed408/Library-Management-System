@@ -30,22 +30,21 @@ def create_member_window(root, menu_frame, employee_id_value):
             style = ttk.Style()
             style.theme_use("clam")
             style.configure("Treeview", 
-                            background="#FFFFFF",  # Light background
-                            foreground="#000000",  # Dark text color
+                            background="#FFFFFF",  
+                            foreground="#000000",  
                             rowheight=25, 
-                            fieldbackground="#FFFFFF",  # Light background for fields
+                            fieldbackground="#FFFFFF",  
                             font=("Arial", 14))  
-            style.map("Treeview", background=[("selected", "#4CAF50")])  # Keep the selected color as it is
+            style.map("Treeview", background=[("selected", "#4CAF50")])  
 
             style.configure("Treeview.Heading", 
-                            background="#F1F1F1",  # Lighter background for the header
-                            foreground="#000000",  # Dark text color for the header
+                            background="#F1F1F1",  
+                            foreground="#000000",  
                             font=("Arial", 16))   
-            style.map("Treeview.Heading", background=[("active", "#F1F1F1")])  # Keep header active state as light
+            style.map("Treeview.Heading", background=[("active", "#F1F1F1")])  
             title.configure(text_color="black")
 
 
-    # ============ Database Initialization =============
     def database():
         con = sqlite3.connect('library.db')
         cur = con.cursor()
@@ -65,8 +64,7 @@ def create_member_window(root, menu_frame, employee_id_value):
         con.close()
 
     database()
-
-    # ============ Helper Functions =============
+ 
     def is_valid_email(email):
         return re.match(r"[^@]+@[^@]+\.[^@]+", email)
 
@@ -106,7 +104,7 @@ def create_member_window(root, menu_frame, employee_id_value):
         except Exception as e:
             print("")
 
-    # ============ CRUD Operations =============
+   
     def add_member():
         member_id = member_id_entry.get()
         first_name = first_name_entry.get()
@@ -192,45 +190,45 @@ def create_member_window(root, menu_frame, employee_id_value):
         member_id = tree.item(selected)["values"][0]
 
         try:
-            # Connect to the database
+       
             con = sqlite3.connect('library.db')
             cur = con.cursor()
 
-            # Enable foreign key constraints for this connection
+            
             cur.execute("PRAGMA foreign_keys = ON;")
 
-            # Attempt to delete the member
+           
             cur.execute("DELETE FROM Member WHERE Member_ID = ?", (member_id,))
             
-            # Commit the changes
+            
             con.commit()
 
-            # Update the status to show success
+            
             status_label.configure(text="Success: Member deleted successfully!", text_color="green")
 
-            # Refresh the members list
+            
             load_members()
 
-            # Clear any other fields if necessary
+            
             clear_fields()
 
         except sqlite3.IntegrityError as e:
-            # Handle foreign key constraint violation (e.g., member has active borrow records)
+            
             status_label.configure(text=f"Error: {e}", text_color="red")
         
         except Exception as e:
-            # Handle other exceptions
+            
             status_label.configure(text=f"Error: {e}", text_color="red")
 
         finally:
-            # Close the connection
+            
             if con:
                 con.close()
 
     def clear_status():
         status_label.configure(text="")
 
-        status_label.after(3000, clear_status)  # Clears the status label after 3 seconds            
+        status_label.after(3000, clear_status)              
 
     def search_anything():
         search_term = universal_search_entry.get().strip()

@@ -10,6 +10,7 @@ def main():
     window.geometry('850x650')
     creat_DataBase()
     window.iconbitmap("images/iconwindow.ico")
+    ctk.set_appearance_mode("Dark")
     
     create_login_window(window, redirect_to_page)
 
