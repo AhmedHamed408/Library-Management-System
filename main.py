@@ -17,7 +17,7 @@ def main():
     
     
 def redirect_to_page(role ,employee_id ):
-    for widget in window.winfo_children():
+    for widget in window.winfo_children():  
         widget.destroy()
 
     if role == "admin":

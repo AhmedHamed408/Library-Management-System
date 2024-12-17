@@ -82,6 +82,7 @@ def creat_DataBase():
     CREATE TABLE IF NOT EXISTS Book_Authors (
     ISBN TEXT NOT NULL,
     Author_ID INTEGER,
+    PRIMARY KEY (ISBN, Author_ID),
     FOREIGN KEY (ISBN) REFERENCES Book_Details(ISBN) ON DELETE CASCADE
     );
 """)

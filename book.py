@@ -172,7 +172,7 @@ def create_book_window(root , menu_frame,employee_id_value):
             label_masege.configure(text=x,text_color=y)
      
     def addtree():
-#################################
+    #################################
         conn=sqlite3.connect("library.db")
         cursor=conn.cursor()
         cursor.execute("SELECT * FROM Book_Details ")
@@ -181,7 +181,7 @@ def create_book_window(root , menu_frame,employee_id_value):
             tree.insert("","end",values=row)
         conn.commit()
         conn.close()
-  ################
+    ################
 
     def search():
         for item in tree.get_children():
@@ -213,11 +213,9 @@ def create_book_window(root , menu_frame,employee_id_value):
         category = combo_category.get()
         isbn = entry_isbn.get().strip()
 
-        # إعادة تحميل البيانات بعد التعديل
         for item in tree.get_children():
             tree.delete(item)
 
-        # التأكد من وجود البيانات الإلزامية
         if not isbn or not pub_year or not author or not title:
             masge("Must enter all required values", "red")
             addtree()
@@ -230,7 +228,15 @@ def create_book_window(root , menu_frame,employee_id_value):
             masge("Author ID and Publish Year must be integers", 'red')
             addtree()
             return
-
+        if not author_exists(author):
+            masge("Author ID didn't exist", 'red')   
+            addtree()
+            return
+        if author2:
+            if not author_exists(author2):
+                masge("Another Author ID didn't exist", 'red') 
+                addtree()      
+                return
         conn = sqlite3.connect("library.db")
         cursor = conn.cursor()
         try:
@@ -264,18 +270,23 @@ def create_book_window(root , menu_frame,employee_id_value):
         finally:
             conn.close()
             addtree()
-
+    def author_exists(author_id):
+        conn = sqlite3.connect("library.db")
+        cursor = conn.cursor()
+        cursor.execute("SELECT 1 FROM Author WHERE Employee_ID = ?", (author_id,))
+        exists = cursor.fetchone() is not None
+        conn.close()
+        return exists
+    
     def delete():
         name = entry_search_title.get().strip().upper()
         if not name:
             masge("please enter the ISBN or title", 'red')
             return
 
-        # Connect to the database
         conn = sqlite3.connect("library.db")
         cursor = conn.cursor()
         
-        # Enable foreign key constraints for this connection
         cursor.execute("PRAGMA foreign_keys = ON;")
         
         try:
@@ -302,35 +313,76 @@ def create_book_window(root , menu_frame,employee_id_value):
         finally:
             # Close the connection
             conn.close()
-
-    def updete():
+    def update():
         try:
-           author = int(entry_author.get())
-           title = entry_title.get()
-           pub_year = entry_pub_year.get()
-           category = combo_category.get()
-           isbn=entry_isbn.get().strip()
-           conn=sqlite3.connect("library.db")
-           cursor=conn.cursor()
-           cursor.execute(  """UPDATE Book_Details
-                    SET Title=?, Author_ID=? , Publish_year=?,  Category=?
-                    WHERE ISBN=?
-                 """, (title, author,pub_year,category,isbn))
-           conn.commit()
-           conn.commit()
+            # Get input values
+            isbn = entry_isbn.get().strip()
+            title = entry_title.get().strip()
+            pub_year = entry_pub_year.get().strip()
+            category = combo_category.get()
+            author_id = entry_author.get().strip()  # Primary Author (required)
+            author_id2 = entry_author2.get().strip()  # Optional Second Author
 
-           for item in tree.get_children():
-              tree.delete(item)  
-           addtree()
-           reset()
-           masge("the book is aupdet","green")
+            # Validate required inputs
+            if not isbn or not title or not pub_year or not author_id:
+                masge("ISBN, Title, Publication Year, and Author ID are required", "red")
+                return
+
+            # Convert to proper data types
+            pub_year = int(pub_year)
+            author_id = int(author_id)
+            author_id2 = int(author_id2) if author_id2 else None
+
+            # Connect to the database
+            conn = sqlite3.connect("library.db")
+            cursor = conn.cursor()
+            if not author_exists(author_id):
+                masge("Author ID didn't exist", 'red')   
+                addtree()
+                return
+            # Update the Book_Details table
+            cursor.execute("""
+                UPDATE Book_Details
+                SET Title = ?, Publish_year = ?, Category = ?
+                WHERE ISBN = ?
+            """, (title, pub_year, category, isbn))
+
+            # Update authors in the Book_Authors table
+            cursor.execute("DELETE FROM Book_Authors WHERE ISBN = ?", (isbn,))  # Clear all existing authors
+
+            # Re-insert primary author
+            cursor.execute("""
+                INSERT INTO Book_Authors (ISBN, Author_ID)
+                VALUES (?, ?)
+            """, (isbn, author_id))
+
+            # Re-insert second author if provided and not the same as the primary
+            if author_id2 and author_id2 != author_id:
+                cursor.execute("""
+                    INSERT INTO Book_Authors (ISBN, Author_ID)
+                    VALUES (?, ?)
+                """, (isbn, author_id2))
+
+            # Commit changes and close the connection
+            conn.commit()
+            conn.close()
+
+            # Update UI
+            for item in tree.get_children():
+                tree.delete(item)
+            addtree()
+            reset()
+            masge("The book and authors were updated successfully", "green")
+
         except ValueError:
-           masge("the book is not updet","red")
+            masge("Publication Year and Author IDs must be integers", "red")
+        except sqlite3.Error as e:
+            masge(f"Database error: {e}", "red")
 
     # ===========================Treeview==========================
     columns=("Isbn", "title","category", "author","pub_year","Copies_available","borrowed_copies","Employes_id")
     tree = ttk.Treeview(fr2, columns=columns ,show="headings",height=10)
-
+    
     tree.heading("Isbn", text="ISBN")
     tree.heading("title", text="Title")
     tree.heading("category", text="category")
@@ -344,7 +396,7 @@ def create_book_window(root , menu_frame,employee_id_value):
     for col in columns:
         tree.heading(col, text=col)
         if col == "title":
-            tree.column(col, width=300)
+            tree.column(col, width=200)
         elif col == "pub_year":
             tree.column(col, width=100)
         elif col == "author":
@@ -363,16 +415,16 @@ def create_book_window(root , menu_frame,employee_id_value):
 
     # ==================Buttons====================================
     but_addbook = ctk.CTkButton(fr1, text="Add Book", command=add)
-    but_addbook.place(relx=0.65, rely=0.8, relwidth=0.15)
+    but_addbook.place(relx=0.05, rely=0.8, relwidth=0.15)
 
-    but_update = ctk.CTkButton(fr1, text="Update",command=updete)
+    but_update = ctk.CTkButton(fr1, text="Update",command=update)
     but_update.place(relx=0.45, rely=0.8, relwidth=0.15)
 
     but_delete = ctk.CTkButton(fr1, text="Delete",command=delete)
     but_delete.place(relx=0.25, rely=0.8, relwidth=0.15)
 
     but_search = ctk.CTkButton(fr1, text="Search",command=search)
-    but_search.place(relx=0.05, rely=0.8, relwidth=0.15)
+    but_search.place(relx=0.65, rely=0.8, relwidth=0.15)
 
     conn=sqlite3.connect("library.db")
     cursor=conn.cursor()
