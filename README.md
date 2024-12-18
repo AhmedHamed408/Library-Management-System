@@ -49,6 +49,14 @@ The **Library Management System** is a comprehensive solution for managing the o
 
 ## Screenshots
 ![Library Management System Screenshot](https://github.com/user-attachments/assets/9460154d-0d81-42dc-8158-db457c443cac)
+![image](https://github.com/user-attachments/assets/2fd8bf52-c442-4c92-80c7-f7065ce1f24f)
+![image](https://github.com/user-attachments/assets/8404ff50-ff71-4ed8-b4f8-f5df86c27369)
+![image](https://github.com/user-attachments/assets/8a69fa9d-f6e6-496b-bf80-2b3b41fa05b6)
+![image](https://github.com/user-attachments/assets/49a7952f-6f49-4954-b8da-5743896e1532)
+![image](https://github.com/user-attachments/assets/2891084a-c76f-4937-ae54-c3c865f94cc6)
+![image](https://github.com/user-attachments/assets/7e561a3b-7b44-4d7e-a85c-9f19f41a1702)
+![image](https://github.com/user-attachments/assets/05180019-6a54-4e82-86e3-6d51e536a04e)
+![image](https://github.com/user-attachments/assets/b8d5da4a-0ad2-4797-8911-cc45e920fa85)
 
 
 
