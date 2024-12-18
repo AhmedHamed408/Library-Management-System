@@ -243,7 +243,7 @@ def create_book_window(root , menu_frame,employee_id_value):
 
     def add():
         author = entry_author.get().strip()
-        author2 = entry_author2.get().strip()  # المؤلف الثاني (اختياري)
+        author2 = entry_author2.get().strip() 
         title = entry_title.get().strip()
         pub_year = entry_pub_year.get()
         category = combo_category.get()
@@ -327,16 +327,11 @@ def create_book_window(root , menu_frame,employee_id_value):
         cursor.execute("PRAGMA foreign_keys = ON;")
         
         try:
-            # Execute the DELETE statement
+           
             cursor.execute("DELETE FROM Book_Details WHERE Title LIKE ? OR ISBN LIKE ?", (f'%{name}%', f'%{name}%'))
-            
-            # Commit changes
             conn.commit()
-            
-            # Show success message
+           
             masge("the book is deleted", "green")
-            
-            # Clear the entry field and update the tree
             entry_search_title.delete(0, 'end')
             for item in tree.get_children():
                 tree.delete(item)
@@ -344,15 +339,13 @@ def create_book_window(root , menu_frame,employee_id_value):
             reset()
 
         except sqlite3.IntegrityError as e:
-            # Handle foreign key constraint violation
+            
             masge(f"Error: {e}", "red")
 
         finally:
-            # Close the connection
             conn.close()
     def update():
         try:
-            # Get input values
             isbn = entry_isbn.get().strip()
             title = entry_title.get().strip()
             pub_year = entry_pub_year.get().strip()
@@ -363,12 +356,10 @@ def create_book_window(root , menu_frame,employee_id_value):
             if item !=isbn:
                 masge("isbn cannot update",'red')
                 return
-            # Validate required inputs
             if not isbn or not title or not pub_year or not author_id:
                 masge("ISBN, Title, Publication Year, and Author ID are required", "red")
                 return
 
-            # Convert to proper data types
             pub_year = int(pub_year)
             author_id = int(author_id)
             author_id2 = int(author_id2) if author_id2 else None
@@ -383,34 +374,28 @@ def create_book_window(root , menu_frame,employee_id_value):
             conn = sqlite3.connect("library.db")
             cursor = conn.cursor()
          
-            # Update the Book_Details table
             cursor.execute("""
                 UPDATE Book_Details
                 SET Title = ?, Publish_year = ?, Category = ?
                 WHERE ISBN = ?
             """, (title, pub_year, category, isbn))
 
-            # Update authors in the Book_Authors table
-            cursor.execute("DELETE FROM Book_Authors WHERE ISBN = ?", (isbn,))  # Clear all existing authors
+            cursor.execute("DELETE FROM Book_Authors WHERE ISBN = ?", (isbn,))  
 
-            # Re-insert primary author
             cursor.execute("""
                 INSERT INTO Book_Authors (ISBN, Author_ID)
                 VALUES (?, ?)
             """, (isbn, author_id))
 
-            # Re-insert second author if provided and not the same as the primary
             if author_id2 and author_id2 != author_id:
                 cursor.execute("""
                     INSERT INTO Book_Authors (ISBN, Author_ID)
                     VALUES (?, ?)
                 """, (isbn, author_id2))
 
-            # Commit changes and close the connection
             conn.commit()
             conn.close()
 
-            # Update UI
             for item in tree.get_children():
                 tree.delete(item)
             addtree()
