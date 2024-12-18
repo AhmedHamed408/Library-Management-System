@@ -66,7 +66,7 @@ def admin_page(root):
 
     admin_label = ctk.CTkLabel(
         master=root,
-        text="Admin Page",
+        text="Administrator",
         font=("Arial", 24, "bold"),
         text_color="white"
     )
